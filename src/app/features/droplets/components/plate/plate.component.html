@@ -1,0 +1,22 @@
+<div class="plate-container" [style.grid-template-columns]="gridTemplateColumns()" *ngIf="plateWells().length > 0">
+  <div class="empty-cell"></div>
+  @for (colLabel of columnLabels(); track colLabel) {
+    <div class="grid-cell column-label">{{ colLabel }}</div>
+  }
+
+  @for (row of wellsByRow(); track $index) {
+    <div class="grid-cell row-label">{{ rowLabels()[$index] }}</div>
+    @for (well of row; track well.WellIndex) {
+      <div
+        class="grid-cell well-cell"
+        [class.low-droplet]="isLowDroplet(well.DropletCount)"
+      >
+        {{ isLowDroplet(well.DropletCount) ? 'L' : 'N' }}
+      </div>
+    }
+  }
+</div>
+
+<div *ngIf="plateWells().length === 0">
+  <p>Please upload a plate data file to display the grid.</p>
+</div>
