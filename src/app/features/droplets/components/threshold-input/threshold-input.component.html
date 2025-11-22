@@ -1,0 +1,13 @@
+<div class="threshold-container">
+  <label for="threshold">Change Threshold:</label>
+  <input
+    id="threshold"
+    type="number"
+    min="0"
+    max="500"
+    class="threshold-input"
+    [ngModel]="inputValue()"
+    (ngModelChange)="inputValue.set($event)"
+  />
+  <button (click)="onUpdateClick()">Update</button>
+</div>
