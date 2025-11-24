@@ -2,24 +2,22 @@ import { Component } from '@angular/core';
 
 @Component({
     selector: 'app-footer',
-    template: `
-        <footer>
-            <h6 class="copyright">Plate Droplets Viewer &copy; 2025</h6>
-        </footer>
-    `,
+    template: ` <h6 class="copyright"><em>Plate Droplets Viewer</em> &copy; 2025</h6> `,
     styles: [
         `
-            footer {
-                background-color: #282c34;
-                padding: 20px;
-                color: white;
-                text-align: center;
+            :host {
+                display: flex;
+                align-content: middle;
+                justify-content: flex-start;
+                width: 100%;
             }
-            .app-title {
-                margin: 0;
-                font-size: 24px;
+            .copyright {
+                font-size: 0.925rem;
+                font-style: italics;
+                margin: 20px 30px;
+                color: var(--text-muted);
             }
         `,
     ],
 })
-export class Footer {}
+export class FooterComponent {}
