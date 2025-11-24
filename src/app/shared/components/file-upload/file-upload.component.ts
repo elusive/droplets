@@ -8,6 +8,7 @@ import {
     ViewChild,
 } from '@angular/core';
 import { PlateDataService } from '@src/app/features/droplets/services/plate-data.service';
+import { ErrorService } from '@src/app/core/services/error.service';
 import { CommonModule } from '@angular/common';
 
 export type UploadStatus = 'idle' | 'uploading' | 'success' | 'error';
@@ -23,6 +24,7 @@ export type UploadStatus = 'idle' | 'uploading' | 'success' | 'error';
 export class FileUploadComponent {
     // dependecies
     private readonly plateDataService = inject(PlateDataService);
+    private readonly errorService = inject(ErrorService);
 
     // children refs
     @ViewChild('fileInput') fileInput!: ElementRef;
@@ -68,6 +70,7 @@ export class FileUploadComponent {
 
     reset() {
         this.selectedFile.set(null);
+        this.errorService.clearError();
         this.fileInput.nativeElement.value = null;
         this.plateDataService.loadPlateData();
         this.status.set('idle');
