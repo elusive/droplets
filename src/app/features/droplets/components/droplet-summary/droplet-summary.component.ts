@@ -10,11 +10,11 @@ import { CommonModule } from '@angular/common';
         @if (totalWellCount() > 0) {
             <div class="summary-container">
                 <div>
-                    <span class="summary-label label">Well Count:</span>
+                    <span class="summary-label label">Total Count: </span>
                     <span>{{ totalWellCount() }}</span>
                 </div>
                 <div>
-                    <span class="summary-label label">Low-Droplet Well Count:</span>
+                    <span class="summary-label label">Low-Droplet Count: </span>
                     <span>{{ lowDropletWellCount() }}</span>
                 </div>
             </div>
@@ -27,7 +27,7 @@ import { CommonModule } from '@angular/common';
                 flex-direction: row;
                 justify-content: flex-start;
                 gap: 20px;
-                margin: 10px 40px;
+                margin: 20px 50px;
             }
             .summary-label {
                 color: var(--text-dark);
