@@ -1,0 +1,78 @@
+.file-upload-container {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    height: 2.5rem;
+    margin-top: 6rem;
+}
+
+.drop-zone {
+    border: 2px dashed var(--text-light);
+    border-radius: 10px;
+    min-width: 280px;
+    height: 140px;
+    padding: 1.2rem;
+    text-align: center;
+    cursor: pointer;
+    background-color: transparent;
+    transition: all 0.2s ease;
+    position: relative;
+}
+.drop-zone:hover {
+    border-color: var(--primary);
+    background-color: var(--primary-light);
+}
+.drop-zone:hover .sub-text {
+    color: var(--gray-400);
+}
+
+.hidden-input {
+    display: none;
+}
+
+.drop-zone-content {
+    pointer-events: none; /* Let clicks pass through to parent */
+}
+
+.upload-icon-wrapper {
+    margin: 0 auto 0.5rem auto;
+    width: 48px;
+    height: 48px;
+    color: var(--text-light);
+}
+.drop-zone:hover .upload-icon-wrapper {
+    color: var(--primary);
+}
+.main-text {
+    font-weight: 500;
+    color: var(--primary);
+    margin: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.sub-text {
+    font-size: 0.85rem;
+    color: var(--primary-light);
+    margin: 0.25rem 0 0 0;
+}
+
+p.file-upload-text {
+    text-align: center;
+    font-weight: 700;
+}
+
+/* Action Buttons */
+.actions {
+    display: flex;
+    gap: 1rem;
+}
+.highlight,
+.link {
+    color: var(--primary);
+    font-weight: 600;
+}
+.link:hover {
+    color: var(--primary);
+    text-decoration: underline;
+}

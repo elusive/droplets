@@ -1,53 +1,44 @@
-import { ChangeDetectionStrategy, Component, inject, input, signal } from '@angular/core';
-import { PlateDataService } from '../../../features/droplets/services/plate-data.service';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    ElementRef,
+    inject,
+    input,
+    signal,
+    ViewChild,
+} from '@angular/core';
+import { PlateDataService } from '@src/app/features/droplets/services/plate-data.service';
 import { CommonModule } from '@angular/common';
+
+export type UploadStatus = 'idle' | 'uploading' | 'success' | 'error';
 
 @Component({
     selector: 'app-file-upload',
     standalone: true,
     imports: [CommonModule],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    template: `
-        <div class="file-upload-container">
-            <label for="file-upload">Select Plate Droplet Info File:</label>
-            <input
-                (change)="onFileSelected($event)"
-                id="file-upload"
-                class="file-input"
-                type="file"
-                accept=".json"
-            />
-            <button (click)="onLoadClick()" [disabled]="!selectedFile()">Load</button>
-        </div>
-        @if (errorMessage()) {
-            <p class="error">{{ errorMessage() }}</p>
-        }
-        @if (successMessage()) {
-            <p class="success">{{ successMessage() }}</p>
-        }
-    `,
-    styles: [
-        `
-            .file-upload-container {
-                margin: 1rem;
-                font-family: sans-serif;
-            }
-        `,
-    ],
+    templateUrl: 'file-upload.component.html',
+    styleUrl: 'file-upload.component.css',
 })
 export class FileUploadComponent {
     // dependecies
     private readonly plateDataService = inject(PlateDataService);
 
+    // children refs
+    @ViewChild('fileInput') fileInput!: ElementRef;
+
     // inputs
-    label = input<string>('Select Plate Data File: ');
+    title = input<string>('Select Plate Data File: ');
+    subTitle = input<string>('Accepts JSON up to 1MB');
     fileType = input<string>('.json');
 
     // component state
+    status = signal<UploadStatus>('idle');
     selectedFile = signal<File | null>(null);
     errorMessage = signal<string | null>(null);
     successMessage = signal<string | null>(null);
 
+    // event handling
     onFileSelected(event: Event): void {
         const input = event.target as HTMLInputElement;
         if (input.files && input.files.length > 0) {
@@ -57,11 +48,12 @@ export class FileUploadComponent {
         }
     }
 
-    onLoadClick(): void {
+    async onLoadClick(): Promise<void> {
         try {
             const file = this.selectedFile();
             if (file) {
-                this.plateDataService.loadPlateData(file);
+                this.status.set('uploading');
+                await this.plateDataService.loadPlateData(file);
             }
         } catch (e: unknown) {
             if (e instanceof Error) {
@@ -69,6 +61,15 @@ export class FileUploadComponent {
             } else {
                 this.errorMessage.set(String(e));
             }
+            this.status.set('error');
+            throw new Error(`Failed to load plate data file: ${this.errorMessage()}`);
         }
+    }
+
+    reset() {
+        this.selectedFile.set(null);
+        this.fileInput.nativeElement.value = null;
+        this.plateDataService.loadPlateData();
+        this.status.set('idle');
     }
 }
