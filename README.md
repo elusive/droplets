@@ -17,6 +17,8 @@ ng serve
 ```
 Once the server is running, open your browser and navigate to `http://localhost:4200/`.
 
+**Note**: Sample json files, both valid and invalid, for testing are in `/src/assets`.
+
 ## Unit Tests
 The service class unit tests can be executed with the command: `ng test`
 
