@@ -39,9 +39,11 @@ helps keep the code concise. One other advantage is that the fields initialize b
 - State is managed using signals. With an app of this size, and even with additional features, there is not necessarily a need for NgRX or RxJs. If at some point persistent state across features is needed then a global store would make sense. More complex features could also indicate a need for use of Observables but not at this point. This saves size and complexity.
 
 ## To Do 
-- Add a Github Action to build and deploy the app to an S3 bucket (or similar).
+- Create develop branch and make it default, setup rules for merging to require tests run and code review.
+- Add a Github Action to build and deploy the app to an S3 bucket (or similar). From branches named 'release/v*' only. 
 - Add environment directory with production configuration values as needed.
 - Add ESlint with a precommit hook to ensure code style is maintained.
 - Add e2e tests with playwright or cypress.
+
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.0.
