@@ -1,26 +1,44 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { Header } from './core/layout/header.component';
-import { Footer } from './core/layout/footer.component';
+import { ErrorService } from '@src/app/core/services/error.service';
+import { CommonModule } from '@angular/common';
+import { MessageComponent } from '@src/app/core/layout/message.component';
 
 @Component({
     selector: 'app-root',
-    imports: [RouterOutlet, Footer, Header],
-    template: ` <div class="wrapper">
-        <app-header></app-header>
+    imports: [RouterOutlet, CommonModule, MessageComponent],
+    template: `
+        <app-message
+            *ngIf="errorMessage() as msg"
+            [message]="msg"
+            (click)="clearError()"
+        ></app-message>
         <router-outlet />
-        <app-footer></app-footer>
-    </div>`,
+    `,
     styles: [
         `
-            .wrapper {
-                display: grid;
-                grid-template-rows: auto 1fr auto; /* Header, main content, footer */
-                min-height: 100vh;
+            .app-message {
+                position: absolute;
+                bottom: 0rem;
+                left: 1rem;
+                right: 1rem;
+                padding: 1rem;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
             }
         `,
     ],
 })
 export class App {
-    //protected readonly title = signal('droplets');
+    // dependencies
+    private errorService = inject(ErrorService);
+
+    // state
+    errorMessage = this.errorService.errorMessage ?? null;
+
+    // methods
+    clearError(): void {
+        this.errorService.clearError();
+    }
 }
