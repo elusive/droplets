@@ -1,0 +1,22 @@
+<div class="layout">
+    <aside>
+        <app-file-upload
+            title="Upload Plate File:"
+            subTitle="Accepts JSON up to 1MB"
+        ></app-file-upload>
+        <app-threshold-input
+            [threshold]="threshold()"
+            (thresholdChange)="onThresholdChange($event)"
+        ></app-threshold-input>
+    </aside>
+    <header>
+        <app-header></app-header>
+    </header>
+    <main>
+        <app-plate [threshold]="threshold()"></app-plate>
+        <app-droplet-summary [threshold]="threshold()"></app-droplet-summary>
+    </main>
+    <footer>
+        <app-footer></app-footer>
+    </footer>
+</div>

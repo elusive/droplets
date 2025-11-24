@@ -1,0 +1,31 @@
+.layout {
+    display: flex;
+    flex-direction: column;
+}
+main {
+    grid-area: main;
+    color: var(--gray-400);
+}
+aside {
+    grid-area: sidebar;
+    max-width: 430px;
+}
+header {
+    grid-area: header;
+}
+footer {
+    grid-area: footer;
+}
+
+@media (min-width: 431px) {
+    .layout {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        grid-template-rows: auto 1fr auto;
+        grid-template-areas:
+            'sidebar header'
+            'sidebar main'
+            'sidebar footer';
+        min-height: 100vh;
+    }
+}
