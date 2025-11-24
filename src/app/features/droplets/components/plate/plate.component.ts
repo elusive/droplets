@@ -3,19 +3,19 @@ import {
     Component,
     computed,
     inject,
-    OnInit,
     signal,
     effect,
     input,
 } from '@angular/core';
-import { PlateDataService } from '../../services/plate-data.service';
-import { Well } from '../../models/well.model';
+import { PlateDataService } from '@src/app/features/droplets/services/plate-data.service';
+import { Well } from '@src/app/features/droplets/models/well.model';
 import { CommonModule } from '@angular/common';
+import { LegendComponent } from '@src/app/shared/components/legend.component';
 
 @Component({
     selector: 'app-plate',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule, LegendComponent],
     templateUrl: './plate.component.html',
     styleUrl: './plate.component.css',
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -23,6 +23,7 @@ import { CommonModule } from '@angular/common';
 export class PlateComponent {
     // inputs
     threshold = input<number>(0);
+    cellSize = 40;
 
     // dependencies
     private readonly plateDataService = inject(PlateDataService);
@@ -32,7 +33,7 @@ export class PlateComponent {
     plateSize = signal<'48-well' | '96-well' | null>(null);
     currentThreshold = signal<number>(this.threshold());
 
-    // computed state (plate length depends on well count)
+    // computed state (readonly)
     columnLabels = computed(() => {
         if (this.plateSize() === '96-well') {
             return Array.from({ length: 12 }, (_, i) => i + 1);
@@ -41,10 +42,7 @@ export class PlateComponent {
         }
         return [];
     });
-
     rowLabels = computed(() => Array.from({ length: 8 }, (_, i) => String.fromCharCode(65 + i))); // A, B, C, ... H
-
-    // Group wells by row for easier rendering
     wellsByRow = computed(() => {
         const wells = this.plateWells();
         const wellsPerRow = this.columnLabels().length;
@@ -54,18 +52,18 @@ export class PlateComponent {
         }
         return grouped;
     });
-
     gridTemplateColumns = computed(() => {
         const numColumns = this.columnLabels().length;
         if (numColumns > 0) {
             // +1 for the row label column
-            return `repeat(${numColumns + 1}, auto)`;
+            return `repeat(${numColumns + 1}, ${this.cellSize}px)`;
         }
         return '1fr'; // Default or empty state
     });
 
     constructor() {
         effect(() => {
+            // call service to get signal for plateData and its value in one line
             const plateDropletInfo = this.plateDataService.getPlateData()();
             if (
                 plateDropletInfo &&

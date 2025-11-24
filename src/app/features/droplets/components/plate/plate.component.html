@@ -1,22 +1,38 @@
-<div class="plate-container" [style.grid-template-columns]="gridTemplateColumns()" *ngIf="plateWells().length > 0">
-  <div class="empty-cell"></div>
-  @for (colLabel of columnLabels(); track colLabel) {
-    <div class="grid-cell column-label">{{ colLabel }}</div>
-  }
+@if (plateWells().length > 0) {
+    <div class="plate-outer">
+        <div class="plate-container" [style.grid-template-columns]="gridTemplateColumns()">
+            <div class="empty-cell"></div>
+            @for (colLabel of columnLabels(); track colLabel) {
+                <div class="column-label cell">{{ colLabel }}</div>
+            }
 
-  @for (row of wellsByRow(); track $index) {
-    <div class="grid-cell row-label">{{ rowLabels()[$index] }}</div>
-    @for (well of row; track well.WellIndex) {
-      <div
-        class="grid-cell well-cell"
-        [class.low-droplet]="isLowDroplet(well.DropletCount)"
-      >
-        {{ isLowDroplet(well.DropletCount) ? 'L' : 'N' }}
-      </div>
-    }
-  }
-</div>
-
-<div *ngIf="plateWells().length === 0">
-  <p>Please upload a plate data file to display the grid.</p>
-</div>
+            @for (row of wellsByRow(); track $index) {
+                <div class="row-label cell">{{ rowLabels()[$index] }}</div>
+                @for (well of row; track well.WellIndex) {
+                    <div
+                        class="well cell"
+                        title="Droplet Count: {{ well.DropletCount }}"
+                        [class.low-droplet]="isLowDroplet(well.DropletCount)"
+                    >
+                        {{ isLowDroplet(well.DropletCount) ? 'L' : 'N' }}
+                    </div>
+                }
+            }
+        </div>
+        <app-legend>N (normal) L (low)</app-legend>
+    </div>
+} @else {
+    <div class="instructions">
+        <p>
+            Please upload a plate data file in json format in order to display the droplet
+            inforomation. The threshold will be used to indicate wells with a low droplet count
+            within the plate display. The wells with a low droplet count will have an accented color
+            and will be marked with the letter L (low).
+        </p>
+        <p>
+            Use the <b>Threshold</b> input in the left sidebar, to change the threshold for low
+            droplet count. Once you enter the new threshold (0 - 500), click the
+            <em>Update</em> button to see the changes in the plate display.
+        </p>
+    </div>
+}
