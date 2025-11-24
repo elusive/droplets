@@ -1,24 +1,35 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
-import { PlateDataService } from '../../services/plate-data.service';
+import { PlateDataService } from '@src/app/features/droplets/services/plate-data.service';
 import { CommonModule } from '@angular/common';
 
 @Component({
     selector: 'app-droplet-summary',
     standalone: true,
     imports: [CommonModule],
-    templateUrl: './droplet-summary.component.html',
+    template: `
+        @if (totalWellCount() > 0) {
+            <div class="summary-container">
+                <div>
+                    <span class="summary-label label">Well Count:</span>
+                    <span>{{ totalWellCount() }}</span>
+                </div>
+                <div>
+                    <span class="summary-label label">Low-Droplet Well Count:</span>
+                    <span>{{ lowDropletWellCount() }}</span>
+                </div>
+            </div>
+        }
+    `,
     styles: [
         `
             .summary-container {
-                margin-top: 20px;
-                padding: 10px;
-                border: 1px solid #ccc;
-                background-color: #f9f9f9;
-            }
-            .summary-item {
-                margin-bottom: 5px;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-around;
+                margin: 10px 0;
             }
             .summary-label {
+                color: var(--text-dark);
                 font-weight: bold;
             }
         `,
@@ -28,12 +39,12 @@ import { CommonModule } from '@angular/common';
 export class DropletSummaryComponent {
     // dependencies
     private readonly plateDataService = inject(PlateDataService);
+    private plateData = this.plateDataService.getPlateData();
 
     // inputs
     threshold = input<number>(100);
 
     // component state
-    private plateData = this.plateDataService.getPlateData();
     totalWellCount = computed(() => {
         const data = this.plateData();
         return data?.DropletInfo?.Wells?.length ?? 0;
