@@ -1,5 +1,5 @@
 :root {
-    /* colors for regular mode, come back if I have time for dark 
+    /* colors for regular mode, come back if I have time for dark
     --primary: #259b4b;
     --secondary: #d9f2e5; */
     --accent: #fa8c03;
@@ -62,11 +62,10 @@ header {
     display: flex;
     flex-direction: row;
     background-color: transparent;
-    padding: 20px 0;
+    padding: 40px 0;
     margin: 0 auto;
     width: 100%;
-    justify-content: center;
-    align-content: center;
+    justify-content: flex-start;
 }
 
 h1 {

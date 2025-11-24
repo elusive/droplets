@@ -25,8 +25,9 @@ import { CommonModule } from '@angular/common';
             .summary-container {
                 display: flex;
                 flex-direction: row;
-                justify-content: space-around;
-                margin: 10px 0;
+                justify-content: flex-start;
+                gap: 20px;
+                margin: 10px 40px;
             }
             .summary-label {
                 color: var(--text-dark);

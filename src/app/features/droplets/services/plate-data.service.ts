@@ -1,6 +1,7 @@
-import { Injectable, Signal, signal } from '@angular/core';
+import { Injectable, Signal, signal, inject } from '@angular/core';
 import { PlateDropletInfo } from '@src/app/features/droplets/models/plate-droplet-info.model';
-import { Plate } from '../models/plate.model';
+import { Plate } from '@src/app/features/droplets/models/plate.model';
+import { ErrorService } from '@src/app/core/services/error.service';
 
 @Injectable({
     providedIn: 'root',
@@ -24,7 +25,7 @@ export class PlateDataService {
      */
     async loadPlateData(file: File | null = null): Promise<boolean> {
         if (file) {
-            this.errorService.setErrorMessage(null); // clear any error
+            this.errorService.clearError();
 
             const text = await file.text();
             const json = JSON.parse(text);
