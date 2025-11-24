@@ -1,33 +1,51 @@
-import { Injectable, signal } from '@angular/core';
-import { PlateDropletInfo } from '../models/plate-droplet-info.model';
+import { Injectable, Signal, signal } from '@angular/core';
+import { PlateDropletInfo } from '@src/app/features/droplets/models/plate-droplet-info.model';
+import { JsonSafeParse } from '@src/app/shared/helpers/parsing-helper';
+import { Plate } from '../models/plate.model';
 
 @Injectable({
     providedIn: 'root',
 })
 export class PlateDataService {
+    // state
     private plateData = signal<PlateDropletInfo | null>(null);
 
-    getPlateData() {
+    // public methods
+    getPlateData(): Signal<PlateDropletInfo | null> {
         return this.plateData.asReadonly();
     }
 
-    loadPlateData(file: File): void {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            try {
-                const text = reader.result as string;
-                const json = JSON.parse(text);
-                this.plateData.set(json?.PlateDropletInfo);
-            } catch (error) {
-                console.error('Error parsing plate data file:', error);
-                this.plateData.set(null);
-            }
-        };
-        reader.onerror = (e) => {
-            console.error('Error reading file:', e);
-            this.plateData.set(null);
-        };
+    /**
+     * @description Loads plate well data from json file object.
+     * @param {File} file
+     * @returns {Promise<boolean>} True if load successful, false otherwise.
+     */
+    async loadPlateData(file: File | null = null): Promise<boolean> {
+        if (file) {
+            const text = await file.text();
+            const json = JSON.parse(text);
 
-        reader.readAsText(file);
+            if (!json || !json.PlateDropletInfo) {
+                throw new Error('Invalid JSON structure: PlateDropletInfo not found.');
+            }
+
+            const plateDropletInfo = json.PlateDropletInfo;
+            if (
+                typeof plateDropletInfo.Version !== 'number' ||
+                !plateDropletInfo.DropletInfo ||
+                typeof plateDropletInfo.DropletInfo.Version !== 'number' ||
+                !Array.isArray(plateDropletInfo.DropletInfo.Wells)
+            ) {
+                throw new Error(
+                    'Invalid PlateDropletInfo format: Missing or incorrect properties.',
+                );
+            } else {
+                this.plateData.set(plateDropletInfo);
+                return true;
+            }
+        } else {
+            this.plateData.set(null);
+            return false;
+        }
     }
 }

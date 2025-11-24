@@ -4,66 +4,77 @@ import { PlateDropletInfo } from '../models/plate-droplet-info.model';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 describe('PlateDataService', () => {
-  let service: PlateDataService;
+    let service: PlateDataService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(PlateDataService);
-  });
+    beforeEach(() => {
+        TestBed.configureTestingModule({});
+        service = TestBed.inject(PlateDataService);
+    });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+    it('should be created', () => {
+        expect(service).toBeTruthy();
+    });
 
-  it('should load and get plate data from a valid file', async () => {
-    const mockPlateData: PlateDropletInfo = {
-      Version: 1,
-      DropletInfo: {
-        Version: '1.0',
-        Wells: [
-          { WellName: 'A1', WellIndex: 0, DropletCount: 100 },
-          { WellName: 'B1', WellIndex: 1, DropletCount: 200 },
-        ],
-      },
-    };
-    const blob = new Blob([JSON.stringify(mockPlateData)], { type: 'application/json' });
-    const file = new File([blob], 'plate.json');
+    it('should load and get plate data from a valid file', async () => {
+        // arrange
+        const mockPlateDropletInfo: PlateDropletInfo = {
+            Version: 1,
+            DropletInfo: {
+                Version: 1,
+                Wells: [
+                    { WellName: 'A1', WellIndex: 0, DropletCount: 100 },
+                    { WellName: 'B1', WellIndex: 1, DropletCount: 200 },
+                ],
+            },
+        };
+        const mockPlateData = {
+            PlateDropletInfo: mockPlateDropletInfo,
+        };
+        const jsonString = JSON.stringify(mockPlateData);
+        const mockFile = {
+            name: 'plate.json',
+            size: jsonString.length,
+            type: 'application/json',
+            text: () => Promise.resolve(jsonString), // had to mock the .text() method
+        } as File;
 
-    service.loadPlateData(file);
+        // act
+        const succeeded = await service.loadPlateData(mockFile);
 
-    await new Promise(resolve => setTimeout(resolve, 100)); // wait for file reader
+        // assert
+        expect(succeeded).toBe(true);
+        const actual = service.getPlateData()();
+        expect(actual).toEqual(mockPlateDropletInfo);
+    });
 
-    const plateData = service.getPlateData()();
-    expect(plateData).toEqual(mockPlateData);
-  });
+    it('should handle invalid JSON file', async () => {
+        // arrange
+        const file = new File(['invalid json'], 'invalid.json');
 
-  it('should handle invalid JSON file', async () => {
-    const file = new File(['invalid json'], 'invalid.json');
+        // act & assert
+        service.loadPlateData(file).catch((e) => expect(e).toBeInstanceOf(Error));
+        const plateData = service.getPlateData()();
 
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-    service.loadPlateData(file);
+        // assert
+        expect(plateData).toBeNull();
+    });
 
-    await new Promise(resolve => setTimeout(resolve, 100));
+    it('should handle JSON with invalid structure', async () => {
+        // arrange
+        const invalidData = { foo: 'bar' };
+        const jsonString = JSON.stringify(invalidData);
+        const mockFile = {
+            name: 'plate.json',
+            size: jsonString.length,
+            type: 'application/json',
+            text: () => Promise.resolve(jsonString), // Mock the .text() method
+        } as unknown as File; // Cast to File to satisfy TypeScript
 
-    const plateData = service.getPlateData()();
-    expect(plateData).toBeNull();
-    expect(consoleSpy).toHaveBeenCalled();
-    consoleSpy.mockRestore();
-  });
+        // act & assert
+        service.loadPlateData(mockFile).catch((e) => expect(e).toBeInstanceOf(Error));
 
-  it('should handle JSON with invalid structure', async () => {
-    const invalidData = { foo: 'bar' };
-    const blob = new Blob([JSON.stringify(invalidData)], { type: 'application/json' });
-    const file = new File([blob], 'invalid-structure.json');
-
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-    service.loadPlateData(file);
-
-    await new Promise(resolve => setTimeout(resolve, 100));
-
-    const plateData = service.getPlateData()();
-    expect(plateData).toBeNull();
-    expect(consoleSpy).toHaveBeenCalledWith('Error parsing plate data file:', new Error('Invalid PlateDropletInfo JSON structure'));
-    consoleSpy.mockRestore();
-  });
+        // assert
+        const plateData = service.getPlateData()();
+        expect(plateData).toBeNull();
+    });
 });
