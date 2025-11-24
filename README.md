@@ -7,7 +7,9 @@ must use the schema defined below.
 
 ## Getting Started
 Acquire the application source code by downloading the repo as a zip file or by cloning to a local
-directory. Use the following commands to start the app:
+directory. Project requires Node.js version >= 20. In the root of the project there is a `.nvmrc` file, so if you use nvm you can type the command `nvm use` to use the recommended version of Node. Disregard if you already are on a newer version.
+
+Use the following commands to start the app:
 
 ```shell
 # clone or unzip...
@@ -45,5 +47,5 @@ helps keep the code concise. One other advantage is that the fields initialize b
 - Add ESlint with a precommit hook to ensure code style is maintained.
 - Add e2e tests with playwright or cypress.
 
-
+### Notes
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.0.
