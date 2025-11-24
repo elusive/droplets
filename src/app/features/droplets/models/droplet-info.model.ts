@@ -1,6 +1,6 @@
-import { Well } from './well.model';
+import { Well } from '@src/app/features/droplets/models/well.model';
 
 export interface DropletInfo {
-    Version: string;
+    Version: number;
     Wells: Well[];
 }

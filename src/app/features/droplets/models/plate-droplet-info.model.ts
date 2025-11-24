@@ -1,4 +1,4 @@
-import { DropletInfo } from './droplet-info.model';
+import { DropletInfo } from '@src/app/features/droplets/models/droplet-info.model';
 
 export interface PlateDropletInfo {
     Version: number;
