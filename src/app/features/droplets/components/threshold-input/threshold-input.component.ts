@@ -6,21 +6,7 @@ import { CommonModule } from '@angular/common';
     selector: 'app-threshold-input',
     standalone: true,
     imports: [FormsModule, CommonModule],
-    template: `
-        <div class="threshold-container">
-            <label for="threshold">Change Threshold:</label>
-            <input
-                id="threshold"
-                type="number"
-                min="0"
-                max="500"
-                class="threshold-input"
-                [ngModel]="inputValue()"
-                (ngModelChange)="inputValue.set($event)"
-            />
-            <button (click)="onUpdateClick()">Update</button>
-        </div>
-    `,
+    templateUrl: 'threshold-input.component.html',
     styles: [
         `
             .threshold-container {
@@ -35,6 +21,12 @@ import { CommonModule } from '@angular/common';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ThresholdInputComponent {
+    constructor() {
+        effect(() => {
+            this.inputValue.set(this.threshold());
+        });
+    }
+
     // inputs
     threshold = input<number>(100);
 
@@ -44,12 +36,7 @@ export class ThresholdInputComponent {
     // component state
     inputValue = signal<number>(this.threshold());
 
-    constructor() {
-        effect(() => {
-            this.inputValue.set(this.threshold());
-        });
-    }
-
+    // event handling
     onUpdateClick(): void {
         this.thresholdChange.emit(this.inputValue());
     }

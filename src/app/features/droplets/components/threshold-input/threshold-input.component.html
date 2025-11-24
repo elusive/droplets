@@ -1,13 +1,23 @@
 <div class="threshold-container">
-  <label for="threshold">Change Threshold:</label>
-  <input
-    id="threshold"
-    type="number"
-    min="0"
-    max="500"
-    class="threshold-input"
-    [ngModel]="inputValue()"
-    (ngModelChange)="inputValue.set($event)"
-  />
-  <button (click)="onUpdateClick()">Update</button>
+    <div class="card">
+        <div class="card-header">
+            <h2 class="header-title">Threshold:</h2>
+            <p class="header-subtitle">Update threshold for droplet count.</p>
+        </div>
+        <div class="card-body">
+            <div>
+                <label for="threshold">Threshold:</label>
+                <input
+                    id="threshold"
+                    type="number"
+                    min="0"
+                    max="500"
+                    class="threshold-input"
+                    [ngModel]="inputValue()"
+                    (ngModelChange)="inputValue.set($event)"
+                />
+            </div>
+            <button class="btn btn-secondary" (click)="onUpdateClick()">Update</button>
+        </div>
+    </div>
 </div>
