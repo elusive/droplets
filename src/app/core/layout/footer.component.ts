@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
+import { version } from 'package.json';
 
 @Component({
     selector: 'app-footer',
-    template: ` <h6 class="copyright"><em>Plate Droplets Viewer</em> &copy; 2025</h6> `,
+    template: ` <h6 class="copyright"><em>Plate Droplets Viewer v{{appVersion}}</em> &copy; 2025</h6> `,
     styles: [
         `
             :host {
@@ -20,4 +21,6 @@ import { Component } from '@angular/core';
         `,
     ],
 })
-export class FooterComponent {}
+export class FooterComponent {
+    appVersion = version;
+}
